@@ -16,6 +16,12 @@ Client::Client()
     this->sock_d = socket(AF_INET, SOCK_STREAM, 0);
 }
 
+/**
+ * Connects to server. Must be called before run
+ * @param ip_address
+ * @param port
+ * @throws std::runtime_error
+ */
 void Client::connect_to(const std::string& ip_address, int port) const
 {
     sockaddr_in address_info{};
@@ -30,6 +36,9 @@ void Client::connect_to(const std::string& ip_address, int port) const
         throw std::runtime_error(strerror(errno));
 }
 
+/**
+ * Runs main app loop
+ */
 void Client::run()
 {
     std::string request;
@@ -69,6 +78,10 @@ void Client::run()
     }
 }
 
+/**
+ * Sends message to server. Message is split into arrays of 4096 bytes and sent chunk by chunk
+ * @param message - message to be sent
+ */
 void Client::send_all(const std::string& message) const
 {
     char data[4096] = {0};
@@ -99,6 +112,12 @@ void Client::send_all(const std::string& message) const
     }
 }
 
+/**
+ * Sends an array of bytes to server
+ * @param buf - bytes array
+ * @param length - a number of bytes to be sent
+ * @return a number of actually sent bytes
+ */
 long Client::send_chunk(char* buf, size_t length) const
 {
     ssize_t total = 0;
@@ -116,6 +135,10 @@ long Client::send_chunk(char* buf, size_t length) const
     return total;
 }
 
+/**
+ * Receives message from server
+ * @return received message
+ */
 std::string Client::receive_all() const
 {
     std::string result;
@@ -150,6 +173,11 @@ std::string Client::receive_all() const
     return result;
 }
 
+/**
+ * Receives bytes array
+ * @param to_receive - a number of bytes to receive
+ * @return received array converted to string
+ */
 std::string Client::receive_chunk(ulong to_receive) const
 {
     std::string result;
@@ -172,6 +200,11 @@ std::string Client::receive_chunk(ulong to_receive) const
     return result;
 }
 
+/**
+ * Loads file into string
+ * @param path - path to file
+ * @return string with file data
+ */
 std::string Client::get_binary_file(const std::string& path)
 {
     std::ifstream file_reader(path, std::ios::binary);
